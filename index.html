@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القرآن الكريم والقصص</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Tahoma,sans-serif;
+}
+
+body{
+    background:linear-gradient(180deg,#0b1220,#0f172a);
+    color:#f8fafc;
+    padding:20px;
+}
+
+/* 👑 أعلى الصفحة */
+.top-banner{
+    text-align:center;
+    margin-bottom:15px;
+    padding:10px;
+    color:#94a3b8;
+    font-size:14px;
+    line-height:1.8;
+}
+
+.top-banner .name{
+    color:#d4a359;
+    font-weight:bold;
+    font-size:16px;
+}
+
+/* header */
+header{
+    text-align:center;
+    padding:25px;
+    border-bottom:2px solid #d4a359;
+    margin-bottom:25px;
+}
+
+header h1{
+    color:#d4a359;
+    font-size:26px;
+}
+
+/* container */
+.main-container{
+    max-width:1000px;
+    margin:auto;
+}
+
+/* titles */
+.section-title{
+    color:#d4a359;
+    margin:20px 0;
+    padding-right:10px;
+    border-right:4px solid #d4a359;
+}
+
+/* search */
+.search-box{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.search-box input{
+    width:95%;
+    max-width:500px;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #334155;
+    background:#1e293b;
+    color:white;
+    outline:none;
+}
+
+/* cards */
+.grid-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:15px;
+}
+
+.card{
+    background:#1e293b;
+    border:1px solid #334155;
+    padding:15px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+    text-align:center;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#d4a359;
+    box-shadow:0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* reader */
+.quran-reader{
+    display:none;
+    background:#1e293b;
+    border:2px solid #d4a359;
+    border-radius:12px;
+    padding:20px;
+}
+
+.back-btn{
+    background:#d4a359;
+    border:none;
+    padding:8px 15px;
+    cursor:pointer;
+    font-weight:bold;
+    border-radius:6px;
+    margin-bottom:10px;
+}
+
+.ayah-text{
+    font-family:'Amiri',serif;
+    font-size:22px;
+    line-height:2.4;
+    white-space:pre-line;
+    text-align:justify;
+    color:#f1f5f9;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ✨ اسم المصمم -->
+<div class="top-banner">
+    <div class="name">✨ تم تصميم هذا الموقع بواسطة يامن ✨</div>
+    <div>🤍 لا تنسونا من صالح الدعاء 🤍</div>
+</div>
+
+<header>
+    <h1>القرآن الكريم والقصص</h1>
+</header>
+
+<div class="main-container">
+
+<!-- READER -->
+<div id="reader" class="quran-reader">
+    <button class="back-btn" onclick="closeReader()">رجوع</button>
+    <h2 id="title"></h2>
+    <div id="text" class="ayah-text"></div>
+</div>
+
+<!-- INDEX -->
+<div id="index">
+
+<h2 class="section-title">🔍 البحث</h2>
+<div class="search-box">
+    <input id="searchInput" oninput="filterAll()" placeholder="ابحث عن قصة أو سورة...">
+</div>
+
+<h2 class="section-title">📚 قصص الأنبياء</h2>
+<div id="stories" class="grid-container"></div>
+
+<h2 class="section-title">📖 سور القرآن</h2>
+<div id="surahs" class="grid-container">جاري التحميل...</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* القصص */
+const stories = {
+adam:{
+title:"قصة آدم عليه السلام",
+text:`خلق الله آدم عليه السلام بيده ونفخ فيه من روحه.
+
+أمر الله الملائكة بالسجود له فسجدوا إلا إبليس.
+
+أسكنه الله الجنة ثم أهبطه إلى الأرض بعد التوبة.`
+},
+
+nooh:{
+title:"قصة نوح عليه السلام",
+text:`لبث نوح في قومه 950 سنة يدعوهم للتوحيد.
+
+صنع سفينة ونجا مع المؤمنين من الطوفان.`
+},
+
+ibrahim:{
+title:"قصة إبراهيم عليه السلام",
+text:`حطم الأصنام ودعا للتوحيد.
+
+أُلقي في النار فجعلها الله برداً وسلاماً.
+
+وبنى الكعبة مع ابنه إسماعيل.`
+},
+
+musa:{
+title:"قصة موسى عليه السلام",
+text:`أرسله الله إلى فرعون.
+
+شق الله له البحر.
+
+ونجا بني إسرائيل.`
+},
+
+yusuf:{
+title:"قصة يوسف عليه السلام",
+text:`ألقاه إخوته في البئر.
+
+أصبح عزيز مصر.
+
+واجتمع بأهله بعد سنوات.`
+}
+};
+
+/* render stories */
+const storiesDiv=document.getElementById("stories");
+
+function renderStories(){
+storiesDiv.innerHTML="";
+for(let key in stories){
+let c=document.createElement("div");
+c.className="card";
+c.innerHTML=`<h3>${stories[key].title}</h3><p>اضغط للقراءة</p>`;
+c.onclick=()=>openStory(key);
+storiesDiv.appendChild(c);
+}
+}
+
+/* فتح القصة */
+function openStory(key){
+document.getElementById("index").style.display="none";
+document.getElementById("reader").style.display="block";
+
+document.getElementById("title").innerText=stories[key].title;
+document.getElementById("text").innerText=stories[key].text;
+
+window.scrollTo(0,0);
+}
+
+/* رجوع */
+function closeReader(){
+document.getElementById("reader").style.display="none";
+document.getElementById("index").style.display="block";
+}
+
+/* بحث */
+function filterAll(){
+let v=document.getElementById("searchInput").value.toLowerCase();
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display=c.innerText.toLowerCase().includes(v)?"block":"none";
+});
+}
+
+/* القرآن */
+window.onload=function(){
+renderStories();
+
+fetch("https://api.alquran.cloud/v1/surah")
+.then(r=>r.json())
+.then(d=>{
+let box=document.getElementById("surahs");
+box.innerHTML="";
+
+d.data.forEach(s=>{
+let c=document.createElement("div");
+c.className="card";
+c.innerHTML=`<h3>${s.number}. ${s.name}</h3><p>${s.numberOfAyahs} آية</p>`;
+c.onclick=()=>openSurah(s.number,s.name);
+box.appendChild(c);
+});
+});
+};
+
+/* فتح السورة */
+function openSurah(num,name){
+document.getElementById("index").style.display="none";
+document.getElementById("reader").style.display="block";
+
+document.getElementById("title").innerText=name;
+document.getElementById("text").innerText="جاري التحميل...";
+
+fetch(`https://api.alquran.cloud/v1/surah/${num}`)
+.then(r=>r.json())
+.then(d=>{
+let t="";
+d.data.ayahs.forEach(a=>{
+t+=a.text+" ("+a.numberInSurah+") ";
+});
+document.getElementById("text").innerText=t;
+});
+}
+
+</script>
+
+</body>
+</html>
